@@ -1,6 +1,8 @@
-package com.example.seriesbackend.service.impl;
+package com.example.seriesbackend.service.impl.pageparser;
 
-import com.example.seriesbackend.dto.ContentDto;
+import com.example.seriesbackend.dto.ParsedContentDto;
+import com.example.seriesbackend.entity.Source;
+import com.example.seriesbackend.entity.SourceContent;
 import com.example.seriesbackend.exception.FailedParsingException;
 import com.example.seriesbackend.service.PageParser;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +17,20 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MegogoPageParser implements PageParser {
+    int i = 0;
 
     @Override
-    public List<ContentDto> parsePage(String url){
+    public List<ParsedContentDto> parsePage(String url){
         try {
+            System.out.println("MEGOGO" + (++i));
             var doc = Jsoup.connect(url).get();
             var contents = new ArrayList<>(
                     doc.getElementsByClass("videoItem").stream().map(element -> {
-                        var serviceId = Integer.parseInt(element.attr("data-obj-id"));
+                        var serviceId = Long.parseLong(element.attr("data-obj-id"));
                         var title = element.attr("data-title");
                         var contentUrl = element.getElementsByTag("a").attr("href");
-                        return new ContentDto(serviceId, title, contentUrl);
+                        var imageUrl = element.getElementsByTag("img").get(0).attr("data-original");
+                        return new ParsedContentDto(serviceId, title, contentUrl, imageUrl, Source.SourceType.MEGOGO);
                     }).toList()
             );
 

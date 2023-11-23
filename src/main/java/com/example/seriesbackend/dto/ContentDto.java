@@ -1,25 +1,37 @@
 package com.example.seriesbackend.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.example.seriesbackend.entity.Source;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
-@NoArgsConstructor
+import java.util.List;
+
+@Data
 @AllArgsConstructor
-@EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ToString
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ContentDto {
-    int serviceId;
+
+    Long id;
     String title;
-    String url;
+    String imageUrl;
+    List<SourceContentDto> sourceContentDtoList;
+    boolean isSubscribed;
+
+    @Data
+    @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class SourceContentDto{
+        String url;
+        String imageUrl;
+        Source.SourceType sourceType;
+    }
+
+    public ContentDto(Long id, String title, String imageUrl, List<SourceContentDto> sourceContentDtoList) {
+        this.id = id;
+        this.title = title;
+        this.imageUrl =imageUrl;
+        this.sourceContentDtoList = sourceContentDtoList;
+    }
 }
